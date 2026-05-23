@@ -1,8 +1,15 @@
+databases:
+  - name: redxtube-db
+    plan: free
+    databaseName: redxtube
+    user: redxtube
+
 services:
   - type: web
     name: redxtube-api
     runtime: node
-    buildCommand: npm install -g pnpm && pnpm install && cd api-server && pnpm run build
+    plan: free
+    buildCommand: npm install -g pnpm && pnpm install && cd api-server && pnpm run build && node migrate.mjs
     startCommand: node --enable-source-maps ./api-server/dist/index.mjs
     envVars:
       - key: NODE_ENV
@@ -10,13 +17,16 @@ services:
       - key: PORT
         value: 3000
       - key: DATABASE_URL
-        sync: false
+        fromDatabase:
+          name: redxtube-db
+          property: connectionString
       - key: ADMIN_PASSWORD
-        sync: false
+        value: admin1234
 
   - type: web
     name: redxtube-frontend
     runtime: static
+    plan: free
     buildCommand: npm install -g pnpm && pnpm install && cd red-x-tube && pnpm run build
     staticPublishPath: ./red-x-tube/dist/public
     routes:
@@ -25,4 +35,7 @@ services:
         destination: /index.html
     envVars:
       - key: VITE_API_URL
-        sync: false
+        fromService:
+          name: redxtube-api
+          type: web
+          property: host
