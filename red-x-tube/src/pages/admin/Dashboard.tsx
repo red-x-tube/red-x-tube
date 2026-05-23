@@ -1328,6 +1328,70 @@ function SiteSettingsManager() {
         <p>6. When users pay by card, you get Approve / Reject buttons in Telegram</p>
         <p>7. If you don't respond within 30s, it auto-approves</p>
       </div>
+
+      {/* Change Password */}
+      <ChangePasswordSection />
+    </div>
+  );
+}
+
+/* ── Change Password ────────────────────────────────────── */
+function ChangePasswordSection() {
+  const { toast } = useToast();
+  const [, setLocation] = useLocation();
+  const [newPassword, setNewPassword] = useState("");
+  const [confirm, setConfirm] = useState("");
+  const [saving, setSaving] = useState(false);
+
+  const handleChange = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (newPassword.length < 4) { toast({ title: "Password must be at least 4 characters", variant: "destructive" }); return; }
+    if (newPassword !== confirm) { toast({ title: "Passwords do not match", variant: "destructive" }); return; }
+    setSaving(true);
+    try {
+      await adminFetch("/admin/change-password", { method: "POST", body: JSON.stringify({ newPassword }) });
+      toast({ title: "Password changed! Please log in again." });
+      setTimeout(() => setLocation("/admin"), 1500);
+    } catch (err: any) {
+      toast({ title: "Failed", description: err.message, variant: "destructive" });
+    } finally { setSaving(false); }
+  };
+
+  return (
+    <div className="bg-[#1a1a24] rounded-xl border border-red-500/20 p-6 space-y-4">
+      <div>
+        <h3 className="font-bold text-base flex items-center gap-2">
+          🔐 Change Admin Password
+        </h3>
+        <p className="text-xs text-white/40 mt-1">Password change করলে automatically logout হবে।</p>
+      </div>
+      <form onSubmit={handleChange} className="space-y-3">
+        <div>
+          <Label className="text-white/70 text-xs uppercase tracking-wider">New Password</Label>
+          <Input
+            type="password"
+            value={newPassword}
+            onChange={e => setNewPassword(e.target.value)}
+            placeholder="নতুন password লিখুন (কমপক্ষে ৪ অক্ষর)"
+            className="bg-[#0d0d14] border-white/10 mt-1.5"
+            required
+          />
+        </div>
+        <div>
+          <Label className="text-white/70 text-xs uppercase tracking-wider">Confirm Password</Label>
+          <Input
+            type="password"
+            value={confirm}
+            onChange={e => setConfirm(e.target.value)}
+            placeholder="আবার লিখুন"
+            className="bg-[#0d0d14] border-white/10 mt-1.5"
+            required
+          />
+        </div>
+        <Button type="submit" disabled={saving} className="bg-red-600 hover:bg-red-500 font-bold">
+          {saving ? "Saving..." : "Change Password"}
+        </Button>
+      </form>
     </div>
   );
 }
