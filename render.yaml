@@ -8,7 +8,6 @@ services:
   - type: web
     name: redxtube-api
     runtime: node
-    plan: free
     buildCommand: npm install -g pnpm && pnpm install && cd api-server && pnpm run build && node migrate.mjs
     startCommand: node --enable-source-maps ./api-server/dist/index.mjs
     envVars:
@@ -26,7 +25,6 @@ services:
   - type: web
     name: redxtube-frontend
     runtime: static
-    plan: free
     buildCommand: npm install -g pnpm && pnpm install && cd red-x-tube && pnpm run build
     staticPublishPath: ./red-x-tube/dist/public
     routes:
