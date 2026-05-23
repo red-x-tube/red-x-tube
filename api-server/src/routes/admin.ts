@@ -1,5 +1,5 @@
 import { Router, type IRouter } from "express";
-import { db, categoriesTable, videosTable, socialLinksTable } from "@workspace/db";
+import { db, categoriesTable, videosTable, socialLinksTable, siteSettingsTable } from "@workspace/db";
 import { count, sum, eq } from "drizzle-orm";
 import { AdminLoginBody } from "@workspace/api-zod";
 import { logger } from "../lib/logger";
@@ -7,11 +7,28 @@ import { adminSessions } from "../lib/sessions";
 
 const router: IRouter = Router();
 
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? "admin123";
+const ENV_ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? "admin1234";
 const SESSION_SECRET = process.env.SESSION_SECRET ?? "redxtube-secret";
 
 function generateToken(): string {
   return Math.random().toString(36).slice(2) + Date.now().toString(36);
+}
+
+async function getAdminPassword(): Promise<string> {
+  try {
+    const [row] = await db.select().from(siteSettingsTable).where(eq(siteSettingsTable.key, "admin_password"));
+    if (row?.value) return row.value;
+  } catch { /* fall back to env */ }
+  return ENV_ADMIN_PASSWORD;
+}
+
+function requireAdmin(req: any, res: any, next: any) {
+  const token = req.cookies?.admin_token;
+  if (!token || !adminSessions.has(token)) {
+    res.status(401).json({ error: "Not authenticated" });
+    return;
+  }
+  next();
 }
 
 router.post("/admin/login", async (req, res): Promise<void> => {
@@ -21,7 +38,8 @@ router.post("/admin/login", async (req, res): Promise<void> => {
     return;
   }
 
-  if (parsed.data.password !== ADMIN_PASSWORD) {
+  const currentPassword = await getAdminPassword();
+  if (parsed.data.password !== currentPassword) {
     res.status(401).json({ error: "Invalid password" });
     return;
   }
@@ -55,6 +73,26 @@ router.get("/admin/verify", async (req, res): Promise<void> => {
     return;
   }
   res.json({ success: true });
+});
+
+router.post("/admin/change-password", requireAdmin, async (req, res): Promise<void> => {
+  const { newPassword } = req.body ?? {};
+  if (!newPassword || typeof newPassword !== "string" || newPassword.trim().length < 4) {
+    res.status(400).json({ error: "Password must be at least 4 characters" });
+    return;
+  }
+  try {
+    await db
+      .insert(siteSettingsTable)
+      .values({ key: "admin_password", value: newPassword.trim() })
+      .onConflictDoUpdate({ target: siteSettingsTable.key, set: { value: newPassword.trim() } });
+    adminSessions.clear();
+    res.clearCookie("admin_token");
+    res.json({ success: true });
+  } catch (err) {
+    req.log.error({ err }, "Failed to change password");
+    res.status(500).json({ error: "Failed to change password" });
+  }
 });
 
 router.get("/admin/stats", async (_req, res): Promise<void> => {
