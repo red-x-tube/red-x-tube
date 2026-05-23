@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <title>Red-X Tube</title>
+    <meta name="description" content="বাংলাদেশ সবচেয়ে বড় Expose Community" />
+    <meta name="robots" content="index, follow" />
+    <meta property="og:title" content="Red-X Tube" />
+    <meta property="og:description" content="বাংলাদেশ সবচেয়ে বড় Expose Community" />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Red-X Tube" />
+    <meta name="twitter:description" content="বাংলাদেশ সবচেয়ে বড় Expose Community" />
+    <!-- Telegram Mini App -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script>
+      const tg = window.Telegram.WebApp;
+      const param = tg.initDataUnsafe.start_param;
+      if (param) {
+        window.location.href = "/" + param;
+      }
+    </script>
+    <!-- Monetag SDK -->
+    <script src="//libtl.com/sdk.js" data-zone="11007567" data-sdk="show_11007567"></script>
+    <!-- Adsgram SDK -->
+    <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+      html body replit-auth-button,
+      html body [id*="replit-badge"],
+      html body .replit-badge,
+      html body iframe[src*="replit.com/badge"],
+      html body div[style*="position: fixed"][style*="bottom"] {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        height: 0px !important;
+        width: 0px !important;
+        max-height: 0px !important;
+        max-width: 0px !important;
+        pointer-events: none !important;
+        transform: scale(0) !important;
+        clip-path: circle(0) !important;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

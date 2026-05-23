@@ -1,0 +1,724 @@
+openapi: 3.1.0
+info:
+  # Do not change the title, if the title changes, the import paths will be broken
+  title: Api
+  version: 0.1.0
+  description: API specification for Red-X Tube
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: admin
+    description: Admin operations
+  - name: categories
+    description: Category operations
+  - name: videos
+    description: Video operations
+  - name: social-links
+    description: Social link operations
+
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
+  /admin/login:
+    post:
+      operationId: adminLogin
+      tags: [admin]
+      summary: Admin login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminCredentials"
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminLoginResult"
+        "401":
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /admin/logout:
+    post:
+      operationId: adminLogout
+      tags: [admin]
+      summary: Admin logout
+      responses:
+        "200":
+          description: Logged out
+
+  /admin/verify:
+    get:
+      operationId: adminVerify
+      tags: [admin]
+      summary: Verify admin session
+      responses:
+        "200":
+          description: Session valid
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminLoginResult"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /admin/stats:
+    get:
+      operationId: getAdminStats
+      tags: [admin]
+      summary: Get site statistics
+      responses:
+        "200":
+          description: Stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SiteStats"
+
+  /categories:
+    get:
+      operationId: listCategories
+      tags: [categories]
+      summary: List all categories
+      responses:
+        "200":
+          description: List of categories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Category"
+    post:
+      operationId: createCategory
+      tags: [categories]
+      summary: Create a category
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CategoryInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Category"
+
+  /categories/{id}:
+    patch:
+      operationId: updateCategory
+      tags: [categories]
+      summary: Update a category
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CategoryUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Category"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    delete:
+      operationId: deleteCategory
+      tags: [categories]
+      summary: Delete a category
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /videos:
+    get:
+      operationId: listVideos
+      tags: [videos]
+      summary: List videos
+      parameters:
+        - name: section
+          in: query
+          schema:
+            type: string
+            enum: [home, free, paid]
+        - name: categoryId
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of videos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Video"
+    post:
+      operationId: createVideo
+      tags: [videos]
+      summary: Create a video
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VideoInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Video"
+
+  /videos/{id}:
+    get:
+      operationId: getVideo
+      tags: [videos]
+      summary: Get a video
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Video
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Video"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    patch:
+      operationId: updateVideo
+      tags: [videos]
+      summary: Update a video
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VideoUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Video"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    delete:
+      operationId: deleteVideo
+      tags: [videos]
+      summary: Delete a video
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /videos/by-slug/{slug}:
+    get:
+      operationId: getVideoBySlug
+      tags: [videos]
+      summary: Get a video by slug
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Video
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Video"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /videos/{id}/view:
+    patch:
+      operationId: incrementVideoView
+      tags: [videos]
+      summary: Increment view count
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: View incremented
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Video"
+
+  /social-links:
+    get:
+      operationId: listSocialLinks
+      tags: [social-links]
+      summary: List social links
+      responses:
+        "200":
+          description: List of social links
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SocialLink"
+    post:
+      operationId: createSocialLink
+      tags: [social-links]
+      summary: Create a social link
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SocialLinkInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SocialLink"
+
+  /social-links/{id}:
+    patch:
+      operationId: updateSocialLink
+      tags: [social-links]
+      summary: Update a social link
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SocialLinkUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SocialLink"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    delete:
+      operationId: deleteSocialLink
+      tags: [social-links]
+      summary: Delete a social link
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+components:
+  schemas:
+    ContentBlock:
+      type: object
+      required: [type]
+      properties:
+        type:
+          type: string
+          enum: [text, image, video]
+        content:
+          type: ["string", "null"]
+        url:
+          type: ["string", "null"]
+
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+      required: [error]
+
+    AdminCredentials:
+      type: object
+      required: [password]
+      properties:
+        password:
+          type: string
+
+    AdminLoginResult:
+      type: object
+      required: [success]
+      properties:
+        success:
+          type: boolean
+
+    SiteStats:
+      type: object
+      required: [totalVideos, homeCount, freeCount, paidCount, totalViews, categoryCount, socialLinkCount]
+      properties:
+        totalVideos:
+          type: integer
+        homeCount:
+          type: integer
+        freeCount:
+          type: integer
+        paidCount:
+          type: integer
+        totalViews:
+          type: integer
+        categoryCount:
+          type: integer
+        socialLinkCount:
+          type: integer
+
+    Category:
+      type: object
+      required: [id, name, videoCount, createdAt]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        videoCount:
+          type: integer
+        createdAt:
+          type: string
+
+    CategoryInput:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+          minLength: 1
+
+    CategoryUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+
+    Video:
+      type: object
+      required: [id, slug, title, sections, mediaType, viewCount, unlockRequired, adsUnlockEnabled, createdAt]
+      properties:
+        id:
+          type: integer
+        slug:
+          type: string
+        title:
+          type: string
+        sections:
+          type: array
+          items:
+            type: string
+            enum: [home, free, paid]
+          minItems: 1
+        mediaType:
+          type: string
+          enum: [video, image, text]
+        categoryId:
+          type: ["integer", "null"]
+        categoryName:
+          type: ["string", "null"]
+        videoUrl:
+          type: ["string", "null"]
+        imageUrl:
+          type: ["string", "null"]
+        textContent:
+          type: ["string", "null"]
+        thumbnailUrl:
+          type: ["string", "null"]
+        description:
+          type: ["string", "null"]
+        viewCount:
+          type: integer
+        unlockRequired:
+          type: boolean
+        adsUnlockEnabled:
+          type: boolean
+        monetagAdsLink:
+          type: ["string", "null"]
+        monetagLinks:
+          type: ["array", "null"]
+          items:
+            type: string
+        adsRequired:
+          type: ["integer", "null"]
+        monetagZoneId:
+          type: ["string", "null"]
+        adTimerDuration:
+          type: ["integer", "null"]
+        blocks:
+          type: ["array", "null"]
+          items:
+            $ref: "#/components/schemas/ContentBlock"
+        createdAt:
+          type: string
+
+    VideoInput:
+      type: object
+      required: [title, sections, mediaType]
+      properties:
+        slug:
+          type: ["string", "null"]
+        title:
+          type: string
+          minLength: 1
+        sections:
+          type: array
+          items:
+            type: string
+            enum: [home, free, paid]
+          minItems: 1
+        mediaType:
+          type: string
+          enum: [video, image, text]
+        categoryId:
+          type: ["integer", "null"]
+        videoUrl:
+          type: ["string", "null"]
+        imageUrl:
+          type: ["string", "null"]
+        textContent:
+          type: ["string", "null"]
+        thumbnailUrl:
+          type: ["string", "null"]
+        description:
+          type: ["string", "null"]
+        unlockRequired:
+          type: boolean
+        adsUnlockEnabled:
+          type: boolean
+        monetagAdsLink:
+          type: ["string", "null"]
+        monetagLinks:
+          type: ["array", "null"]
+          items:
+            type: string
+        adsRequired:
+          type: ["integer", "null"]
+        monetagZoneId:
+          type: ["string", "null"]
+        adTimerDuration:
+          type: ["integer", "null"]
+        blocks:
+          type: ["array", "null"]
+          items:
+            $ref: "#/components/schemas/ContentBlock"
+
+    VideoUpdate:
+      type: object
+      properties:
+        slug:
+          type: ["string", "null"]
+        title:
+          type: string
+          minLength: 1
+        sections:
+          type: array
+          items:
+            type: string
+            enum: [home, free, paid]
+          minItems: 1
+        mediaType:
+          type: string
+          enum: [video, image, text]
+        categoryId:
+          type: ["integer", "null"]
+        videoUrl:
+          type: ["string", "null"]
+        imageUrl:
+          type: ["string", "null"]
+        textContent:
+          type: ["string", "null"]
+        thumbnailUrl:
+          type: ["string", "null"]
+        description:
+          type: ["string", "null"]
+        unlockRequired:
+          type: boolean
+        adsUnlockEnabled:
+          type: boolean
+        monetagAdsLink:
+          type: ["string", "null"]
+        monetagLinks:
+          type: ["array", "null"]
+          items:
+            type: string
+        adsRequired:
+          type: ["integer", "null"]
+        monetagZoneId:
+          type: ["string", "null"]
+        adTimerDuration:
+          type: ["integer", "null"]
+        blocks:
+          type: ["array", "null"]
+          items:
+            $ref: "#/components/schemas/ContentBlock"
+
+    SocialLink:
+      type: object
+      required: [id, platform, url, displayName, iconName, sortOrder]
+      properties:
+        id:
+          type: integer
+        platform:
+          type: string
+        url:
+          type: string
+        displayName:
+          type: string
+        iconName:
+          type: string
+        logoUrl:
+          type: ["string", "null"]
+        sortOrder:
+          type: integer
+
+    SocialLinkInput:
+      type: object
+      required: [platform, url, displayName, iconName]
+      properties:
+        platform:
+          type: string
+        url:
+          type: string
+        displayName:
+          type: string
+        iconName:
+          type: string
+        logoUrl:
+          type: ["string", "null"]
+        sortOrder:
+          type: integer
+
+    SocialLinkUpdate:
+      type: object
+      properties:
+        platform:
+          type: string
+        url:
+          type: string
+        displayName:
+          type: string
+        iconName:
+          type: string
+        logoUrl:
+          type: ["string", "null"]
+        sortOrder:
+          type: integer

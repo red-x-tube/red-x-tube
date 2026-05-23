@@ -1,0 +1,196 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@plugin "@tailwindcss/typography";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-card-border: hsl(var(--card-border));
+
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-popover-border: hsl(var(--popover-border));
+
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-primary-border: var(--primary-border);
+
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-secondary-border: var(--secondary-border);
+
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-muted-border: var(--muted-border);
+
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-accent-border: var(--accent-border);
+
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-destructive-border: var(--destructive-border);
+
+  --color-chart-1: hsl(var(--chart-1));
+  --color-chart-2: hsl(var(--chart-2));
+  --color-chart-3: hsl(var(--chart-3));
+  --color-chart-4: hsl(var(--chart-4));
+  --color-chart-5: hsl(var(--chart-5));
+
+  --color-sidebar: hsl(var(--sidebar));
+  --color-sidebar-foreground: hsl(var(--sidebar-foreground));
+  --color-sidebar-border: hsl(var(--sidebar-border));
+  --color-sidebar-primary: hsl(var(--sidebar-primary));
+  --color-sidebar-primary-foreground: hsl(var(--sidebar-primary-foreground));
+  --color-sidebar-primary-border: var(--sidebar-primary-border);
+  --color-sidebar-accent: hsl(var(--sidebar-accent));
+  --color-sidebar-accent-foreground: hsl(var(--sidebar-accent-foreground));
+  --color-sidebar-accent-border: var(--sidebar-accent-border);
+  --color-sidebar-ring: hsl(var(--sidebar-ring));
+
+  --font-sans: var(--app-font-sans);
+  --font-serif: var(--app-font-serif);
+  --font-mono: var(--app-font-mono);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+:root {
+  --button-outline: rgba(255,255,255, .10);
+  --badge-outline: rgba(255,255,255, .05);
+  --opaque-button-border-intensity: 9;
+  --elevate-1: rgba(255,255,255, .04);
+  --elevate-2: rgba(255,255,255, .09);
+
+  --background: 240 15% 5%;
+  --foreground: 0 0% 98%;
+  --border: 240 12% 15%;
+  --card: 240 12% 9%;
+  --card-foreground: 0 0% 98%;
+  --card-border: 240 12% 15%;
+  --sidebar: 240 12% 9%;
+  --sidebar-foreground: 0 0% 98%;
+  --sidebar-border: 240 12% 15%;
+  --sidebar-primary: 277 75% 60%;
+  --sidebar-primary-foreground: 0 0% 98%;
+  --sidebar-accent: 330 85% 60%;
+  --sidebar-accent-foreground: 0 0% 98%;
+  --sidebar-ring: 277 75% 60%;
+  --popover: 240 12% 9%;
+  --popover-foreground: 0 0% 98%;
+  --popover-border: 240 12% 15%;
+  --primary: 277 75% 60%;
+  --primary-foreground: 0 0% 98%;
+  --secondary: 240 12% 15%;
+  --secondary-foreground: 0 0% 98%;
+  --muted: 240 12% 15%;
+  --muted-foreground: 240 5% 65%;
+  --accent: 330 85% 60%;
+  --accent-foreground: 0 0% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 0 0% 98%;
+  --input: 240 12% 15%;
+  --ring: 277 75% 60%;
+  --chart-1: 277 75% 60%;
+  --chart-2: 330 85% 60%;
+  --chart-3: 12 76% 61%;
+  --chart-4: 173 58% 39%;
+  --chart-5: 43 74% 66%;
+
+  --app-font-sans: 'Inter', sans-serif;
+  --app-font-serif: Georgia, serif;
+  --app-font-mono: Menlo, monospace;
+  --radius: .5rem;
+  --shadow-2xs: 0px 2px 0px 0px hsl(0 0% 0% / 0.1);
+  --shadow-xs: 0px 2px 0px 0px hsl(0 0% 0% / 0.2);
+  --shadow-sm: 0px 2px 0px 0px hsl(0 0% 0% / 0.3), 0px 1px 2px -1px hsl(0 0% 0% / 0.2);
+  --shadow: 0px 2px 0px 0px hsl(0 0% 0% / 0.3), 0px 1px 2px -1px hsl(0 0% 0% / 0.2);
+  --shadow-md: 0px 2px 0px 0px hsl(0 0% 0% / 0.3), 0px 2px 4px -1px hsl(0 0% 0% / 0.2);
+  --shadow-lg: 0px 2px 0px 0px hsl(0 0% 0% / 0.3), 0px 4px 6px -1px hsl(0 0% 0% / 0.2);
+  --shadow-xl: 0px 2px 0px 0px hsl(0 0% 0% / 0.3), 0px 8px 10px -1px hsl(0 0% 0% / 0.2);
+  --shadow-2xl: 0px 2px 0px 0px hsl(0 0% 0% / 0.3);
+  
+  --sidebar-primary-border: hsl(var(--sidebar-primary));
+  --sidebar-accent-border: hsl(var(--sidebar-accent));
+  --primary-border: hsl(var(--primary));
+  --secondary-border: hsl(var(--secondary));
+  --muted-border: hsl(var(--muted));
+  --accent-border: hsl(var(--accent));
+  --destructive-border: hsl(var(--destructive));
+}
+
+.dark {
+  /* same as above since we are ALWAYS dark mode */
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+    overscroll-behavior-y: none;
+    -webkit-overflow-scrolling: touch;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: pan-y;
+  }
+}
+
+/* ── Red-X Tube Branding Animations ── */
+@keyframes rxt-title-in {
+  0%   { opacity: 0; transform: translateY(-10px); filter: blur(6px); }
+  100% { opacity: 1; transform: translateY(0);     filter: blur(0);   }
+}
+@keyframes rxt-glow-pulse {
+  0%, 100% { filter: drop-shadow(0 0 8px rgba(168,85,247,0.6))  drop-shadow(0 0 20px rgba(236,72,153,0.3)); }
+  50%       { filter: drop-shadow(0 0 16px rgba(168,85,247,0.9)) drop-shadow(0 0 36px rgba(236,72,153,0.5)); }
+}
+@keyframes rxt-sub-in {
+  0%   { opacity: 0; letter-spacing: 0.35em; }
+  100% { opacity: 1; letter-spacing: 0.15em; }
+}
+
+.rxt-title {
+  animation:
+    rxt-title-in   0.8s cubic-bezier(0.16, 1, 0.3, 1) both,
+    rxt-glow-pulse 3.5s ease-in-out 1s infinite;
+}
+.rxt-subtitle {
+  animation: rxt-sub-in 1s cubic-bezier(0.16, 1, 0.3, 1) 0.35s both;
+}
+
+/* ── Touch-active states for better mobile feel ── */
+.touch-card:active {
+  transform: scale(0.985);
+  transition: transform 0.1s ease;
+}
+
+html body replit-auth-button,
+html body [id*="replit-badge"],
+html body .replit-badge,
+html body iframe[src*="replit.com/badge"],
+html body div[style*="position: fixed"][style*="bottom"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  height: 0px !important;
+  width: 0px !important;
+  max-height: 0px !important;
+  max-width: 0px !important;
+  pointer-events: none !important;
+  transform: scale(0) !important;
+  clip-path: circle(0) !important;
+}
+
