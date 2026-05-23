@@ -35,8 +35,9 @@ app.use("/api/uploads", express.static(uploadsDir));
 app.use(cors({
   origin: [
     "http://localhost:5173",
-    /\.vercel\.app$/,      // সব Vercel URLs
-    /\.onrender\.com$/,    // সব Render URLs
+    /\.vercel\.app$/,
+    /\.onrender\.com$/,
+    /\.koyeb\.app$/,
   ],
   credentials: true,
 }));
